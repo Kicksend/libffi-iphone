@@ -17,32 +17,8 @@ extern "C" {
 
 /* Do not move this. Some versions of AIX are very picky about where
    this is positioned. */
-#ifdef __GNUC__
-//## # define alloca __builtin_alloca
-# define MAYBE_UNUSED __attribute__((__unused__))
-#else
-# define MAYBE_UNUSED
-# if HAVE_ALLOCA_H
-#  include <alloca.h>
-# else
-#  ifdef _AIX
- #pragma alloca
-#  else
-#   ifndef alloca /* predefined by HP cc +Olibcalls */
-char *alloca ();
-#   endif
-#  endif
-# endif
-#endif
-
-/* Check for the existence of memcpy. */
-#if STDC_HEADERS
-# include <string.h>
-#else
-# ifndef HAVE_MEMCPY
-#  define memcpy(d, s, n) bcopy ((s), (d), (n))
-# endif
-#endif
+#include <string.h>
+#include <alloca.h>
 
 #if defined(FFI_DEBUG)
 #include <stdio.h>

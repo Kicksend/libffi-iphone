@@ -150,7 +150,7 @@ _L__\name:
 	@ sp+4: fn
 
 	.text
-	.align 0
+	.align 4
 	.globl _ffi_call_SYSV
 _ffi_call_SYSV:	
 	UNWIND .fnstart
@@ -211,7 +211,7 @@ _ffi_call_SYSV:
 #ifdef __SOFTFP__
 	cmpne	r3, #FFI_TYPE_DOUBLE
 #endif
-	stmeqia	r2, {r0, r1}
+	stmiaeq	r2, {r0, r1}
 
 #ifndef __SOFTFP__
 	beq	LSYM(Lepilogue)
@@ -243,7 +243,7 @@ LSYM(Lepilogue):
 */
 
 	.text
-	.align 0
+	.align 4
 	.globl _ffi_closure_SYSV
 _ffi_closure_SYSV:	
 
