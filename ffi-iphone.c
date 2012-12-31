@@ -277,6 +277,17 @@ ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
 
 /* How to make a trampoline.  */
 
+#ifdef __APPLE__
+/* Apple does not believe in __clear_cache */
+#include <libkern/OSCacheControl.h>
+#define CACHE_FLUSH(from, to) \
+	sys_icache_invalidate((char*)(from), (char*)(to) - (char*)(from))
+#else
+/* Calls __ARM_NR_cacheflush on ARM-Linux. */
+#define CACHE_FLUSH(from, to) \
+    __clear_cache((char*)(from), (char*)(to))
+#endif
+
 #define FFI_INIT_TRAMPOLINE(TRAMP,FUN,CTX)				\
 ({ unsigned char *__tramp = (unsigned char*)(TRAMP);			\
    unsigned int  __fun = (unsigned int)(FUN);				\
@@ -286,7 +297,7 @@ ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
    *(unsigned int*) &__tramp[8] = 0xe59ff000; /* ldr pc, [pc] */	\
    *(unsigned int*) &__tramp[12] = __ctx;				\
    *(unsigned int*) &__tramp[16] = __fun;				\
-   __clear_cache((&__tramp[0]), (&__tramp[19]));			\
+   CACHE_FLUSH((&__tramp[0]), (&__tramp[19]));			\
  })
 
 
